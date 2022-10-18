@@ -485,36 +485,20 @@ class _MyHomePageState extends State<MyHomePage> {
                         child: SizedBox(
                           height: 30,
                           width: 150,
-                          child:
-                          StreamBuilder<PositionData>(
-                            stream: _positionDataStream,
-                            builder: (context, snapshot) {
-                              final positionData = snapshot.data;
-                              return SeekBar(
-                                duration: positionData?.duration ?? Duration.zero,
-                                position: positionData?.position ?? Duration.zero,
-                                bufferedPosition:
-                                positionData?.bufferedPosition ?? Duration.zero,
-                                onChangeEnd: _player.seek,
-                              );
+                          child: ProgressBar(
+
+                            progressBarColor: Colors.grey,
+                            baseBarColor: Colors.grey,
+                            progress: Duration(milliseconds: 1000),
+                            thumbColor: Color(0xff3D345F),
+                            thumbRadius: 6,
+                            buffered: Duration(milliseconds: 2000),
+                            total: Duration(milliseconds: 5000),
+
+                            onSeek: (duration) {
+                              print('User selected a new time: $duration');
                             },
                           ),
-
-
-                          // ProgressBar(
-                          //
-                          //   progressBarColor: Colors.grey,
-                          //   baseBarColor: Colors.grey,
-                          //   progress: Duration(milliseconds: 1000),
-                          //   thumbColor: Color(0xff3D345F),
-                          //   thumbRadius: 6,
-                          //   buffered: Duration(milliseconds: 2000),
-                          //   total: Duration(milliseconds: 5000),
-                          //
-                          //   onSeek: (duration) {
-                          //     print('User selected a new time: $duration');
-                          //   },
-                          // ),
                         ),
                       ),
                     ),
