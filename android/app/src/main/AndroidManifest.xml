@@ -5,8 +5,8 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <application
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher"
-        android:label="yt_counter"
+        android:icon="@mipmap/chant"
+        android:label="Chanting App"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
         <activity

@@ -16,6 +16,7 @@ import 'package:rxdart/rxdart.dart';
 import 'package:vibration/vibration.dart';
 import 'package:yt_counter/audio_demo.dart';
 import 'package:yt_counter/chanting/ui.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 void main() => runApp(const Chant());
 
@@ -28,6 +29,7 @@ class MyApp extends StatefulWidget {
 
 class MyAppState extends State<MyApp> with WidgetsBindingObserver {
   late AudioPlayer _player;
+
   final _playlist = ConcatenatingAudioSource(children: [
     // Remove this audio source from the Windows and Linux version because it's not supported yet
     if (kIsWeb ||
@@ -227,7 +229,6 @@ class MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
                     Vibration.vibrate(duration: 100, amplitude: 128);
 
-                    // HapticFeedback.vibrate();
                   },
                   // onPressed: _incrementCounter,
                   tooltip: 'Increment',
@@ -287,7 +288,9 @@ class MyAppState extends State<MyApp> with WidgetsBindingObserver {
                         for (var i = 0; i < sequence.length; i++)
                           Dismissible(
                             key: ValueKey(sequence[i]),
-                            background: Container(
+                            background:
+
+                            Container(
                               color: Colors.redAccent,
                               alignment: Alignment.centerRight,
                               child: const Padding(
@@ -388,7 +391,9 @@ class ControlButtons extends StatelessWidget {
           stream: player.sequenceStateStream,
           builder: (context, snapshot) => IconButton(
             icon: const Icon(Icons.skip_previous),
-            onPressed: player.hasPrevious ? player.seekToPrevious : null,
+            onPressed:
+
+            player.hasPrevious ? player.seekToPrevious : null,
           ),
         ),
 
