@@ -9,6 +9,8 @@ import 'package:vibration/vibration.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 import '../main.dart';
+import 'api.dart';
+import 'model.dart';
 
 class Chant extends StatelessWidget {
   const Chant({Key? key}) : super(key: key);
@@ -105,15 +107,55 @@ class _MyHomePageState extends State<MyHomePage> {
       _malaCounter = 0;
     });
   }
+  Future<void> _callApi(version,packageName) async {
+
+    ForceUpdateModel? data=await api.getData(version);
+    if(data!.code==1){
+      var appVersionFromApi=data.result![0].appVersion;
+      if(version!=appVersionFromApi){
+        AlertDialog(
+          actions: [
+            IconButton(
+              icon: Icon(Icons.add,color: Colors.white,size: 30),
+              onPressed: () => showDialog<String>(
+                context: context,
+                builder: (BuildContext context) => const AlertDialog(
+                  title: const Text('AlertDialog'),
+                  content: const Text('please update your version'),
+                ),
+              ),
+            ),
+          ],
+
+        );
+
+      }
+
+    }
+
+  }
 
   @override
   void initState() {
     super.initState();
+
+    PackageInfo.fromPlatform().then((PackageInfo packageInfo) {
+      String appName = packageInfo.appName;
+      print("app name = " + appName);
+      String packageName = packageInfo.packageName;
+      print("package name =" + packageName);
+      String version = packageInfo.version;
+      print("version =" + version);
+      String buildNumber = packageInfo.buildNumber;
+      print("build number =" + buildNumber);
+      _callApi(version,packageName);
+    });
     // ambiguate(WidgetsBinding.instance)!.addObserver(this);
     _player = AudioPlayer();
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
       statusBarColor: Colors.black,
     ));
+
     _init();
   }
 
@@ -193,8 +235,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
     var assetName = "assets/svg/Ellipse.svg";
     var asset1 = "assets/image/mala.png";
-    // final String message = DateTime.now().hour < 12 ? "Good morning" : "Good afternoon";
-
+    // final String message = DateTime.now().hour < 12 ? "Good morning" : "Good Afternoon";
+    // print(message);
     return Scaffold(
       body: SafeArea(
         child: Container(
@@ -211,16 +253,67 @@ class _MyHomePageState extends State<MyHomePage> {
                 alignment: Alignment.topLeft,
                 padding: (EdgeInsets.all(30)),
                 // color: Colors.blue,
-                child: Text(
-                  "Good afternoon ",
-                  style: TextStyle(
-                      fontFamily: "Noto_Sans",
-                      fontSize: size.width / 16,
-                      color: Colors.white,
-                      // fontWeight: FontWeight.bold,
-                      decoration: TextDecoration.none),
-                  textAlign: TextAlign.start,
-                ),
+                child: LayoutBuilder(builder: (context, constraints) {
+                  var hour = DateTime.now().hour;
+                  var min = DateTime.now().minute;
+                  print(hour);
+                  if (hour < 12) {
+                    return Text(
+                      "Good Morning",
+                      style: TextStyle(
+                          fontFamily: "Noto_Sans",
+                          fontSize: size.width / 16,
+                          color: Colors.white,
+                          // fontWeight: FontWeight.bold,
+                          decoration: TextDecoration.none),
+                      textAlign: TextAlign.start,
+                    );
+                  } else if (hour >= 12 && hour < 16) {
+                    return Text(
+                      "Good Afternoon",
+                      style: TextStyle(
+                          fontFamily: "Noto_Sans",
+                          fontSize: size.width / 16,
+                          color: Colors.white,
+                          // fontWeight: FontWeight.bold,
+                          decoration: TextDecoration.none),
+                      textAlign: TextAlign.start,
+                    );
+                  } else if ((hour >= 16) && (hour < 19)) {
+                    return Text(
+                      "Good Evening",
+                      style: TextStyle(
+                          fontFamily: "Noto_Sans",
+                          fontSize: size.width / 16,
+                          color: Colors.white,
+                          // fontWeight: FontWeight.bold,
+                          decoration: TextDecoration.none),
+                      textAlign: TextAlign.start,
+                    );
+                  } else {
+                    return Text(
+                      "Good Night",
+                      style: TextStyle(
+                          fontFamily: "Noto_Sans",
+                          fontSize: size.width / 16,
+                          color: Colors.white,
+                          // fontWeight: FontWeight.bold,
+                          decoration: TextDecoration.none),
+                      textAlign: TextAlign.start,
+                    );
+                  }
+                }),
+
+                // Text(
+                //   "Good afternoon",
+                //   style: TextStyle(
+                //       fontFamily: "Noto_Sans",
+                //       fontSize: size.width / 16,
+                //       color: Colors.white,
+                //       // fontWeight: FontWeight.bold,
+                //       decoration: TextDecoration.none),
+                //   textAlign: TextAlign.start,
+                // ),
               ),
               _playerA(size),
               Row(
@@ -433,11 +526,11 @@ class _MyHomePageState extends State<MyHomePage> {
                 Expanded(
                     // flex: 2,
                     child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
                       Container(
                           // width: 100,
                           // height: 40,
@@ -499,9 +592,9 @@ class _MyHomePageState extends State<MyHomePage> {
                         ),
                       ),
                       ControlButtons(_player)
-                  ],
-                ),
-                    )),
+                    ],
+                  ),
+                )),
               ],
             ),
           ),
@@ -604,16 +697,7 @@ class ControlButtons extends StatelessWidget {
     var assetName3 = "assets/svg/pause.svg";
     var assetName4 = "assets/svg/play.svg";
     var assetName5 = "assets/svg/volume.svg";
-    PackageInfo.fromPlatform().then((PackageInfo packageInfo) {
-      String appName = packageInfo.appName;
-      print("app name = " + appName);
-      String packageName = packageInfo.packageName;
-      print("package name =" + packageName);
-      String version = packageInfo.version;
-      print("version =" + version);
-      String buildNumber = packageInfo.buildNumber;
-      print("build number =" + buildNumber);
-    });
+
     return Row(
       // crossAxisAlignment: CrossAxisAlignment.start,
       // mainAxisSize: MainAxisSize.min,
@@ -753,7 +837,7 @@ class ControlButtons extends StatelessWidget {
                 icon: Center(
                   child: Text("${snapshot.data?.toStringAsFixed(1)}x",
                       style: TextStyle(
-                          fontSize: size.width /30,
+                          fontSize: size.width / 30,
                           fontWeight: FontWeight.bold,
                           color: Color(0xff3D345F))),
                 ),

@@ -45,6 +45,7 @@ dependencies:
   audio_video_progress_bar: ^0.11.0
   marquee:
   package_info_plus: ^1.0.6
+  http:
 
 dev_dependencies:
   flutter_test:

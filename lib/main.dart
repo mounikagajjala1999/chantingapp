@@ -10,11 +10,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:just_audio/just_audio.dart';
-
-// import 'package:just_audio_example/common.dar/t';
 import 'package:rxdart/rxdart.dart';
 import 'package:vibration/vibration.dart';
 import 'package:yt_counter/audio_demo.dart';
+import 'package:yt_counter/chanting/api.dart';
 import 'package:yt_counter/chanting/ui.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
@@ -121,6 +120,7 @@ class MyAppState extends State<MyApp> with WidgetsBindingObserver {
       _malaCounter=0;
     });
   }
+
 
   @override
   void initState() {
