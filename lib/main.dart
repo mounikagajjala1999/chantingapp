@@ -10,15 +10,23 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:rxdart/rxdart.dart';
 import 'package:vibration/vibration.dart';
-import 'package:yt_counter/audio_demo.dart';
-import 'package:yt_counter/chanting/api.dart';
 import 'package:yt_counter/chanting/ui.dart';
-import 'package:package_info_plus/package_info_plus.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/adapters.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
-void main() => runApp(const Chant());
 
+// void main() => runApp(const Chant());
+ Future<void> main() async {
+  await Hive.initFlutter();
+
+
+  var box = await Hive.openBox<dynamic>('mybox');
+
+  runApp(const Chant());
+
+}
 class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
 
@@ -28,6 +36,19 @@ class MyApp extends StatefulWidget {
 
 class MyAppState extends State<MyApp> with WidgetsBindingObserver {
   late AudioPlayer _player;
+  @override
+  void initState() {
+
+    super.initState();
+    // ambiguate(WidgetsBinding.instance)!.addObserver(this);
+    _player = AudioPlayer();
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarColor: Colors.black,
+    ));
+    _init();
+  }
+
+
 
   final _playlist = ConcatenatingAudioSource(children: [
     // Remove this audio source from the Windows and Linux version because it's not supported yet
@@ -122,16 +143,8 @@ class MyAppState extends State<MyApp> with WidgetsBindingObserver {
   }
 
 
-  @override
-  void initState() {
-    super.initState();
-    // ambiguate(WidgetsBinding.instance)!.addObserver(this);
-    _player = AudioPlayer();
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      statusBarColor: Colors.black,
-    ));
-    _init();
-  }
+
+
 
   Future<void> _init() async {
     // final session = await AudioSession.instance;

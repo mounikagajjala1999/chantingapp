@@ -2,14 +2,17 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
-import 'package:marquee/marquee.dart';
+import 'package:intl/intl.dart';
 import 'package:vibration/vibration.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 import '../main.dart';
 import 'api.dart';
+import 'history.dart';
 import 'model.dart';
 
 class Chant extends StatelessWidget {
@@ -35,8 +38,65 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MyHomePageState extends State<MyHomePage>  with WidgetsBindingObserver{
+  late AppLifecycleState _lastLifecycleState;
   late AudioPlayer _player;
+  // String counterKey = 'home_counter';
+  final box = Hive.box<dynamic>('mybox');
+
+
+  // String counterKey2='home_counter2';
+  int _malaCounter = 0;
+  int _counter = 0;
+  final _scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
+
+  void _incrementCounter() {
+    // final box = Hive.box<int>('mybox');
+    // int value = box.get(counterKey) ?? 0;
+    // print("counter value $value");
+    // _counter = value;
+
+    setState(() {
+      _counter++;
+    });
+    // box.put(counterKey, _counter);
+  }
+
+  void _clear() {
+    setState(() {
+      _counter = 0;
+      _malaCounter = 0;
+    });
+  }
+
+  @override
+  void initState() {
+    // final box = Hive.box<int>('mybox');
+    // int value =box.get(counterKey) ?? 0;
+    // print("counter value $value");
+    // _counter= value;
+    WidgetsBinding.instance.addObserver(this);
+    super.initState();
+
+    PackageInfo.fromPlatform().then((PackageInfo packageInfo) {
+      String appName = packageInfo.appName;
+      print("app name = " + appName);
+      String packageName = packageInfo.packageName;
+      print("package name =" + packageName);
+      String version = packageInfo.version;
+      print("version =" + version);
+      String buildNumber = packageInfo.buildNumber;
+      print("build number =" + buildNumber);
+      _callApi(version, packageName);
+    });
+    // ambiguate(WidgetsBinding.instance)!.addObserver(this);
+    _player = AudioPlayer();
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarColor: Colors.black,
+    ));
+
+    _init();
+  }
 
   final _playlist = ConcatenatingAudioSource(children: [
     // Remove this audio source from the Windows and Linux version because it's not supported yet
@@ -54,7 +114,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
 
     AudioSource.uri(
-      Uri.parse("asset:///assets/om.mp3"),
+      Uri.parse("asset:///assets/om-chanting1.mpeg"),
       tag: AudioMetadata(
         album: " om ",
         title: "  om mantra",
@@ -71,15 +131,15 @@ class _MyHomePageState extends State<MyHomePage> {
             "https://thumbs.dreamstime.com/b/environment-earth-day-hands-trees-growing-seedlings-bokeh-green-background-female-hand-holding-tree-nature-field-gra-130247647.jpg",
       ),
     ),
-    AudioSource.uri(
-      Uri.parse("asset:///assets/mantraspiritual.mp3"),
-      tag: AudioMetadata(
-        album: "mantra spiritual",
-        title: "  Chanting om",
-        artwork:
-            "https://thumbs.dreamstime.com/b/environment-earth-day-hands-trees-growing-seedlings-bokeh-green-background-female-hand-holding-tree-nature-field-gra-130247647.jpg",
-      ),
-    ),
+    // AudioSource.uri(
+    //   Uri.parse("asset:///assets/mantraspiritual.mp3"),
+    //   tag: AudioMetadata(
+    //     album: "mantra spiritual",
+    //     title: "  Chanting om",
+    //     artwork:
+    //         "https://thumbs.dreamstime.com/b/environment-earth-day-hands-trees-growing-seedlings-bokeh-green-background-female-hand-holding-tree-nature-field-gra-130247647.jpg",
+    //   ),
+    // ),
 
     AudioSource.uri(
       Uri.parse("asset:///assets/shriSwamiSamarthJap.mp3"),
@@ -91,32 +151,16 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     ),
   ]);
-  int _malaCounter = 0;
-  int _counter = 0;
-  final _scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
 
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
-  void _clear() {
-    setState(() {
-      _counter = 0;
-      _malaCounter = 0;
-    });
-  }
-  Future<void> _callApi(version,packageName) async {
-
-    ForceUpdateModel? data=await api.getData(version);
-    if(data!.code==1){
-      var appVersionFromApi=data.result![0].appVersion;
-      if(version!=appVersionFromApi){
+  Future<void> _callApi(version, packageName) async {
+    ForceUpdateModel? data = await api.getData(version);
+    if (data!.code == 1) {
+      var appVersionFromApi = data.result![0].appVersion;
+      if (version != appVersionFromApi) {
         AlertDialog(
           actions: [
             IconButton(
-              icon: Icon(Icons.add,color: Colors.white,size: 30),
+              icon: Icon(Icons.add, color: Colors.white, size: 30),
               onPressed: () => showDialog<String>(
                 context: context,
                 builder: (BuildContext context) => const AlertDialog(
@@ -126,37 +170,9 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ),
           ],
-
         );
-
       }
-
     }
-
-  }
-
-  @override
-  void initState() {
-    super.initState();
-
-    PackageInfo.fromPlatform().then((PackageInfo packageInfo) {
-      String appName = packageInfo.appName;
-      print("app name = " + appName);
-      String packageName = packageInfo.packageName;
-      print("package name =" + packageName);
-      String version = packageInfo.version;
-      print("version =" + version);
-      String buildNumber = packageInfo.buildNumber;
-      print("build number =" + buildNumber);
-      _callApi(version,packageName);
-    });
-    // ambiguate(WidgetsBinding.instance)!.addObserver(this);
-    _player = AudioPlayer();
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      statusBarColor: Colors.black,
-    ));
-
-    _init();
   }
 
   Future<void> _init() async {
@@ -204,12 +220,18 @@ class _MyHomePageState extends State<MyHomePage> {
   void dispose() {
     // ambiguate(WidgetsBinding.instance)!.removeObserver(this);
     _player.dispose();
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
+    print("mounika application $state");
+    print("mounika application ${AppLifecycleState.detached}");
+    print("mounika application ${AppLifecycleState.inactive}");
+    print("mounika application ${AppLifecycleState.resumed}");
     if (state == AppLifecycleState.paused) {
+      print("mounika applications closed");
       // Release the player's resources when not in use. We use "stop" so that
       // if the app resumes later, it will still remember what position to
       // resume from.
@@ -230,14 +252,101 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-
-    // print("anxauyhsdgatsdvayhbuy $height");
-
     var assetName = "assets/svg/Ellipse.svg";
     var asset1 = "assets/image/mala.png";
-    // final String message = DateTime.now().hour < 12 ? "Good morning" : "Good Afternoon";
-    // print(message);
+
+
+    String date = DateFormat("dd-MM-yyyy").format(DateTime.now());
+    final GlobalKey<ScaffoldState> drawerscaffoldkey =
+        GlobalKey<ScaffoldState>();
+    print(" mounikkksfgydyfdy7fgfg$_counter");
     return Scaffold(
+      key: drawerscaffoldkey,
+      drawer: Drawer(
+        child: ValueListenableBuilder(
+            valueListenable: Hive.box<dynamic>('mybox').listenable(),
+            builder: (context, box, child) {
+              // final value = box.get(counterKey);
+              return ListView(
+                padding: const EdgeInsets.all(0),
+                children: [
+                  const DrawerHeader(
+                    decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [Color(0xff3D345F), Color(0xffE79997)])),
+                    //BoxDecoration
+                    child: Text(""),
+                  ),
+                   ListTile(
+                    leading: Icon(Icons.ac_unit),
+                    title: Text(' History ', style: TextStyle(fontSize: 20)),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) =>  SecondRoute()),
+                      );
+                    },
+                    // trailing: Icon(Icons.ac_unit),
+                  ),
+                  // ListTile(
+                  //   leading: Icon(Icons.history),
+                  //   title: Column(
+                  //     mainAxisAlignment: MainAxisAlignment.start,
+                  //     crossAxisAlignment: CrossAxisAlignment.start,
+                  //     children: [
+                  //       Text('Recent count   $value',
+                  //           style: TextStyle(fontSize: 17)),
+                  //       Text(date, style: TextStyle(color: Colors.grey)),
+                  //     ],
+                  //   ),
+                  // ),
+                  const AboutListTile(
+                    aboutBoxChildren: [
+                      Text(
+                          "Chanting app its a Meditation app (previously Chanting Monitor) is a new,"
+                          " comfortable and simple meditation assistant right on your phone. "
+                          "It provides an authentic, simple and the most powerful meditation for the modern age.")],
+                    applicationName: "Chanting app",
+
+                    icon: Icon(
+                      Icons.info,
+                    ),
+                    applicationIcon: Icon(
+                      Icons.local_activity_outlined,
+                    ),
+                    child: Text('About app', style: TextStyle(fontSize: 17)),
+                  ),
+
+                  // Padding(
+                  //   padding: const EdgeInsets.only(left: 170,right: 10),
+                  //   child: MaterialButton(
+                  //     color: Color(0xffB0818E),
+                  //     shape: RoundedRectangleBorder(
+                  //         borderRadius: BorderRadius.circular(14)),
+                  //     child: Text(
+                  //       'Reset',
+                  //       style: TextStyle(
+                  //           fontSize: size.width / 25,
+                  //           color: Colors.white,
+                  //           fontFamily:
+                  //           "assets/fonts/Poppins/Poppins-Regular.ttf",
+                  //           ),
+                  //     ),
+                  //     onPressed: () {
+                  //
+                  //       box.clear();
+                  //       _clear();
+                  //
+                  //     },
+                  //
+                  //   ),
+                  // ),
+                ],
+              );
+            }),
+      ),
       body: SafeArea(
         child: Container(
           decoration: const BoxDecoration(
@@ -246,74 +355,78 @@ class _MyHomePageState extends State<MyHomePage> {
                   end: Alignment.bottomRight,
                   colors: [Color(0xff3D345F), Color(0xffE79997)])),
           child: Column(
-            // mainAxisAlignment: MainAxisAlignment.center,
-
             children: [
-              Container(
-                alignment: Alignment.topLeft,
-                padding: (EdgeInsets.all(30)),
-                // color: Colors.blue,
-                child: LayoutBuilder(builder: (context, constraints) {
-                  var hour = DateTime.now().hour;
-                  var min = DateTime.now().minute;
-                  print(hour);
-                  if (hour < 12) {
-                    return Text(
-                      "Good Morning",
-                      style: TextStyle(
-                          fontFamily: "Noto_Sans",
-                          fontSize: size.width / 16,
-                          color: Colors.white,
-                          // fontWeight: FontWeight.bold,
-                          decoration: TextDecoration.none),
-                      textAlign: TextAlign.start,
-                    );
-                  } else if (hour >= 12 && hour < 16) {
-                    return Text(
-                      "Good Afternoon",
-                      style: TextStyle(
-                          fontFamily: "Noto_Sans",
-                          fontSize: size.width / 16,
-                          color: Colors.white,
-                          // fontWeight: FontWeight.bold,
-                          decoration: TextDecoration.none),
-                      textAlign: TextAlign.start,
-                    );
-                  } else if ((hour >= 16) && (hour < 19)) {
-                    return Text(
-                      "Good Evening",
-                      style: TextStyle(
-                          fontFamily: "Noto_Sans",
-                          fontSize: size.width / 16,
-                          color: Colors.white,
-                          // fontWeight: FontWeight.bold,
-                          decoration: TextDecoration.none),
-                      textAlign: TextAlign.start,
-                    );
-                  } else {
-                    return Text(
-                      "Good Night",
-                      style: TextStyle(
-                          fontFamily: "Noto_Sans",
-                          fontSize: size.width / 16,
-                          color: Colors.white,
-                          // fontWeight: FontWeight.bold,
-                          decoration: TextDecoration.none),
-                      textAlign: TextAlign.start,
-                    );
-                  }
-                }),
-
-                // Text(
-                //   "Good afternoon",
-                //   style: TextStyle(
-                //       fontFamily: "Noto_Sans",
-                //       fontSize: size.width / 16,
-                //       color: Colors.white,
-                //       // fontWeight: FontWeight.bold,
-                //       decoration: TextDecoration.none),
-                //   textAlign: TextAlign.start,
-                // ),
+              Row(
+                children: [
+                  IconButton(
+                    onPressed: () {
+                      //on drawer menu pressed
+                      if (drawerscaffoldkey.currentState!.isDrawerOpen) {
+                        //if drawer is open, then close the drawer
+                        Navigator.pop(context);
+                      } else {
+                        drawerscaffoldkey.currentState!.openDrawer();
+                        //if drawer is closed then open the drawer.
+                      }
+                    },
+                    icon: const Icon(Icons.menu, color: Colors.white, size: 23),
+                  ),
+                  Container(
+                    alignment: Alignment.topLeft,
+                    padding: (EdgeInsets.only(top: 30, bottom: 30, left: 7)),
+                    // color: Colors.blue,
+                    child: LayoutBuilder(builder: (context, constraints) {
+                      var hour = DateTime.now().hour;
+                      var min = DateTime.now().minute;
+                      print(hour);
+                      if (hour < 12) {
+                        return Text(
+                          "Good Morning",
+                          style: TextStyle(
+                              fontFamily: "Noto_Sans",
+                              fontSize: size.width / 16,
+                              color: Colors.white,
+                              // fontWeight: FontWeight.bold,
+                              decoration: TextDecoration.none),
+                          textAlign: TextAlign.start,
+                        );
+                      } else if (hour >= 12 && hour < 16) {
+                        return Text(
+                          "Good Afternoon",
+                          style: TextStyle(
+                              fontFamily: "Noto_Sans",
+                              fontSize: size.width / 16,
+                              color: Colors.white,
+                              // fontWeight: FontWeight.bold,
+                              decoration: TextDecoration.none),
+                          textAlign: TextAlign.start,
+                        );
+                      } else if ((hour >= 16) && (hour < 19)) {
+                        return Text(
+                          "Good Evening",
+                          style: TextStyle(
+                              fontFamily: "Noto_Sans",
+                              fontSize: size.width / 16,
+                              color: Colors.white,
+                              // fontWeight: FontWeight.bold,
+                              decoration: TextDecoration.none),
+                          textAlign: TextAlign.start,
+                        );
+                      } else {
+                        return Text(
+                          "Good Night",
+                          style: TextStyle(
+                              fontFamily: "Noto_Sans",
+                              fontSize: size.width / 16,
+                              color: Colors.white,
+                              // fontWeight: FontWeight.bold,
+                              decoration: TextDecoration.none),
+                          textAlign: TextAlign.start,
+                        );
+                      }
+                    }),
+                  ),
+                ],
               ),
               _playerA(size),
               Row(
@@ -351,10 +464,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           color: Colors.white10,
                           // color: Color(0xffB0818E),
                           shape: RoundedRectangleBorder(
-                              // side: BorderSide(
-                              //     strokeAlign: StrokeAlign.center,
-                              //     width: 14
-                              // ),
+
                               borderRadius: BorderRadius.circular(14)),
                           elevation: 0,
                           child: Center(
@@ -368,7 +478,9 @@ class _MyHomePageState extends State<MyHomePage> {
                                   fontWeight: FontWeight.w900),
                             ),
                           ),
-                          onPressed: () {},
+                          onPressed: () {
+
+                          },
                         ),
                       ],
                     ),
@@ -399,6 +511,8 @@ class _MyHomePageState extends State<MyHomePage> {
                                     fontSize: size.width / 27,
                                     color: Colors.white)),
                             onPressed: () {
+
+                              // box.clear();
                               _clear();
                             },
                           ),
@@ -485,6 +599,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
   }
+
 
   Widget _playerA(Size size) {
     var asset = "assets/image/chanting.jpg";
