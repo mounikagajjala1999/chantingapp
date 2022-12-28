@@ -263,6 +263,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
           child: SizedBox(
             // height: size.height,
             child: Column(
+
               children: [
                 MyAppBarWidget(drawerscaffoldkey: drawerscaffoldkey),
                 _playerA(size),

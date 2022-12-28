@@ -10,6 +10,7 @@ import 'package:intl/intl.dart';
 import 'package:vibration/vibration.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:yt_counter/ui/home_page.dart';
+import 'package:yt_counter/ui/splash.dart';
 
 import 'main.dart';
 import 'chanting/api.dart';
@@ -25,7 +26,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.green,
       ), // ThemeData
-      home: MyHomePage(),
+      home: Splash(),
       debugShowCheckedModeBanner: false,
     ); // MaterialApp
   }

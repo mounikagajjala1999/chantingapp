@@ -5,11 +5,12 @@ class MyAppBarWidget extends StatelessWidget {
       : super(key: key);
   final GlobalKey<ScaffoldState> drawerscaffoldkey;
 
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return SizedBox(
-      height: size.height / 8.8,
+      height: size.height / 9,
       child: Row(
         children: [
           IconButton(
