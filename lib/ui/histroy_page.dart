@@ -13,6 +13,7 @@ class HistoryPage extends StatelessWidget {
     return list;
   }
 
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -26,6 +27,8 @@ class HistoryPage extends StatelessWidget {
           builder: (context, AsyncSnapshot<List<String>> snapshot) {
             if (snapshot.hasData) {
               return ListView.builder(
+
+                physics:BouncingScrollPhysics(),
                   reverse: true,
                   shrinkWrap: true,
                   itemCount: snapshot.data!.length,
@@ -68,6 +71,7 @@ class HistoryPage extends StatelessWidget {
                           Text(snapshot.data![index].split(" ")[3],
                               style: const TextStyle(
                                   color: Colors.grey, fontSize: 17)),
+
                         ],
                       ),
                       title: Text(

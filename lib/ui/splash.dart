@@ -39,10 +39,26 @@ class _SplashState extends State<Splash> {
           backgroundColor: Colors.transparent,
           body: Center(
             child: Container(
-              child: Image.asset(
-                asset1,
-                height: size.height / 4,
-                fit: BoxFit.cover,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  // ClipRRect(
+                  //   borderRadius: const BorderRadius.only(
+                  //       bottomRight: Radius.circular(100),
+                  //       topRight: Radius.circular(100),
+                  //       topLeft: Radius.circular(100),
+                  //       bottomLeft: Radius.circular(100)),
+                    Image.asset(
+                      asset1,
+                      height: size.height / 4,
+                      fit: BoxFit.cover,
+                    ),
+                  const Padding(
+                    padding: EdgeInsets.all(20.0),
+                    child: Text("Chanting App",style: TextStyle(fontWeight: FontWeight.bold,
+                        fontSize: 20,color: Colors.white70),),
+                  )
+                ],
               ),
 
               // Text("splash screen",style: TextStyle(
@@ -52,7 +68,6 @@ class _SplashState extends State<Splash> {
             ),
           ),
         ),
-
       ],
     );
   }

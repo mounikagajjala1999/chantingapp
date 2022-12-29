@@ -1,13 +1,47 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:yt_counter/ui/histroy_page.dart';
 
-class MyDrawer extends StatelessWidget {
+class MyDrawer extends StatefulWidget {
   const MyDrawer({Key? key}) : super(key: key);
+
+  @override
+  State<MyDrawer> createState() => _MyDrawerState();
+}
+
+class _MyDrawerState extends State<MyDrawer> {
+  late String version;
+
+  void getVersion(String v) {
+    setState(() {
+      version = v;
+    });
+  }
+
+  @override
+  void initState() {
+    PackageInfo.fromPlatform().then((PackageInfo packageInfo) {
+      // String appName = packageInfo.appName;
+      // print("app name = " + appName);
+      // String packageName = packageInfo.packageName;
+      // print("package name =" + packageName);
+      String version = packageInfo.version;
+      print("version =" + version);
+      getVersion(version);
+      // String buildNumber = packageInfo.buildNumber;
+      // print("build number =" + buildNumber);
+      // _callApi(version, packageName);
+    });
+    // TODO: implement initState
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Drawer(
       child: ListView(
+        physics: NeverScrollableScrollPhysics(),
         padding: const EdgeInsets.all(0),
         children: [
           const DrawerHeader(
@@ -17,10 +51,26 @@ class MyDrawer extends StatelessWidget {
                     end: Alignment.bottomRight,
                     colors: [Color(0xff3D345F), Color(0xffE79997)])),
             //BoxDecoration
-            child: Text(""),
+            child: UserAccountsDrawerHeader(
+              decoration: BoxDecoration(color: Colors.transparent),
+              accountName: SizedBox(
+                height: 60,
+                child: Text(
+                  "Chanting App ",
+                  style: TextStyle(fontSize: 18),
+                ),
+              ),
+              currentAccountPictureSize: Size.square(50),
+              currentAccountPicture: ClipRRect(
+                child: Image(
+                  image: AssetImage("assets/image/chant.png"),
+                ),
+              ),
+              accountEmail: null, //circleAvatar
+            ),
           ),
           ListTile(
-            leading: Icon(Icons.ac_unit),
+            leading: Icon(Icons.history),
             title: Text(' History ', style: TextStyle(fontSize: 20)),
             onTap: () {
               Navigator.push(
@@ -28,20 +78,7 @@ class MyDrawer extends StatelessWidget {
                 MaterialPageRoute(builder: (context) => HistoryPage()),
               );
             },
-            // trailing: Icon(Icons.ac_unit),
           ),
-          // ListTile(
-          //   leading: Icon(Icons.history),
-          //   title: Column(
-          //     mainAxisAlignment: MainAxisAlignment.start,
-          //     crossAxisAlignment: CrossAxisAlignment.start,
-          //     children: [
-          //       Text('Recent count   $value',
-          //           style: TextStyle(fontSize: 17)),
-          //       Text(date, style: TextStyle(color: Colors.grey)),
-          //     ],
-          //   ),
-          // ),
           const AboutListTile(
             aboutBoxChildren: [
               Text(
@@ -58,31 +95,16 @@ class MyDrawer extends StatelessWidget {
             ),
             child: Text('About app', style: TextStyle(fontSize: 17)),
           ),
-
-          // Padding(
-          //   padding: const EdgeInsets.only(left: 170,right: 10),
-          //   child: MaterialButton(
-          //     color: Color(0xffB0818E),
-          //     shape: RoundedRectangleBorder(
-          //         borderRadius: BorderRadius.circular(14)),
-          //     child: Text(
-          //       'Reset',
-          //       style: TextStyle(
-          //           fontSize: size.width / 25,
-          //           color: Colors.white,
-          //           fontFamily:
-          //           "assets/fonts/Poppins/Poppins-Regular.ttf",
-          //           ),
-          //     ),
-          //     onPressed: () {
-          //
-          //       box.clear();
-          //       _clear();
-          //
-          //     },
-          //
-          //   ),
-          // ),
+          SizedBox(
+            height: 480,
+            child: Container(
+              alignment: Alignment.bottomCenter,
+              child: Text("version-$version",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      color: Colors.grey, fontStyle: FontStyle.italic)),
+            ),
+          )
         ],
       ),
     );

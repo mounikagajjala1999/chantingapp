@@ -31,21 +31,18 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
   late AudioPlayer _player;
   String counterKey = 'home_counter';
   final box = Hive.box<dynamic>('mybox');
-
-  // String counterKey2='home_counter2';
   int _malaCounter = 0;
   int _counter = 0;
   final _scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
-
   List<String> list = [];
 
   void _incrementCounter() {
-    // if (!mounted)
+
     setState(() {
       _counter++;
     });
-    // box.put(counterKey, _counter);
   }
+
 
   void _clear() {
     String time = DateFormat("hh:mm:ss a").format(DateTime.now());
@@ -65,7 +62,6 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
   void initState() {
     WidgetsBinding.instance.addObserver(this);
     super.initState();
-
     PackageInfo.fromPlatform().then((PackageInfo packageInfo) {
       String appName = packageInfo.appName;
       print("app name = " + appName);
@@ -77,7 +73,6 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
       print("build number =" + buildNumber);
       _callApi(version, packageName);
     });
-    // ambiguate(WidgetsBinding.instance)!.addObserver(this);
     _player = AudioPlayer();
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
       statusBarColor: Colors.black,
@@ -119,15 +114,6 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
             "https://thumbs.dreamstime.com/b/environment-earth-day-hands-trees-growing-seedlings-bokeh-green-background-female-hand-holding-tree-nature-field-gra-130247647.jpg",
       ),
     ),
-    // AudioSource.uri(
-    //   Uri.parse("asset:///assets/mantraspiritual.mp3"),
-    //   tag: AudioMetadata(
-    //     album: "mantra spiritual",
-    //     title: "  Chanting om",
-    //     artwork:
-    //         "https://thumbs.dreamstime.com/b/environment-earth-day-hands-trees-growing-seedlings-bokeh-green-background-female-hand-holding-tree-nature-field-gra-130247647.jpg",
-    //   ),
-    // ),
 
     AudioSource.uri(
       Uri.parse("asset:///assets/shriSwamiSamarthJap.mp3"),
@@ -162,6 +148,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
       }
     }
   }
+
 
   Future<void> _init() async {
     // final session = await AudioSession.instance;
@@ -537,6 +524,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
                 final state = snapshot.data;
                 final sequence = state?.sequence ?? [];
                 return ReorderableListView(
+                  physics: BouncingScrollPhysics(),
                   onReorder: (int oldIndex, int newIndex) {
                     if (oldIndex < newIndex) newIndex--;
                     _playlist.move(oldIndex, newIndex);
