@@ -13,6 +13,7 @@ class MyDrawer extends StatefulWidget {
 class _MyDrawerState extends State<MyDrawer> {
   late String version;
 
+
   void getVersion(String v) {
     setState(() {
       version = v;
@@ -39,6 +40,7 @@ class _MyDrawerState extends State<MyDrawer> {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Drawer(
       child: ListView(
         physics: NeverScrollableScrollPhysics(),
@@ -96,12 +98,13 @@ class _MyDrawerState extends State<MyDrawer> {
             child: Text('About app', style: TextStyle(fontSize: 17)),
           ),
           SizedBox(
-            height: 480,
+            height:size.height/1.8,
             child: Container(
+              // color: Colors.amber,
               alignment: Alignment.bottomCenter,
               child: Text("version-$version",
                   textAlign: TextAlign.center,
-                  style: TextStyle(
+                  style: const TextStyle(
                       color: Colors.grey, fontStyle: FontStyle.italic)),
             ),
           )

@@ -21,7 +21,7 @@ class ControlButtonsWidget extends StatelessWidget {
         Expanded(
           child: Container(
             // color: Colors.amber,
-            // height:size.height/23,
+            height:size.height/15,
             // width: size.width/10,
             child: StreamBuilder<double>(
               stream: player.speedStream,
@@ -51,7 +51,7 @@ class ControlButtonsWidget extends StatelessWidget {
         Expanded(
           child: Container(
             // color: Colors.green,
-            // height:size.height/23,
+            height:size.height/15,
             // width: size.width/10,
             // height: 30,
             // width: 30,
@@ -84,30 +84,39 @@ class ControlButtonsWidget extends StatelessWidget {
                   child: const CircularProgressIndicator(),
                 );
               } else if (playing != true) {
-                return SizedBox(
-                  // height: 30,
-                  // width: 30,
-                  child: IconButton(
-                    color: const Color(0xff3D345F),
-                    icon: SvgPicture.asset(
-                      assetName4,
-                      // icon: const Icon(Icons.play_arrow_rounded),
+                return Container(
+                  // color: Colors.grey,
+                  height:size.height/15,
+                  child: SizedBox(
+
+                    // height: 30,
+                    // width: 30,
+                    child: IconButton(
+                      color: const Color(0xff3D345F),
+                      icon: SvgPicture.asset(
+                        assetName4,
+                        // icon: const Icon(Icons.play_arrow_rounded),
+                      ),
+                      // iconSize: 25.0,
+                      onPressed: player.play,
                     ),
-                    // iconSize: 25.0,
-                    onPressed: player.play,
                   ),
                 );
               } else if (processingState != ProcessingState.completed) {
-                return SizedBox(
-                  // height: 30,
-                  // width: 30,
-                  child: IconButton(
-                    icon: SvgPicture.asset(
-                      assetName3,
-                      // icon: const Icon(Icons.play_arrow_rounded),
+                return Container(
+                  // color: Colors.grey,
+                  height:size.height/15,
+                  child: SizedBox(
+                    // height: 30,
+                    // width: 30,
+                    child: IconButton(
+                      icon: SvgPicture.asset(
+                        assetName3,
+                        // icon: const Icon(Icons.play_arrow_rounded),
+                      ),
+                      iconSize: 25.0,
+                      onPressed: player.pause,
                     ),
-                    iconSize: 25.0,
-                    onPressed: player.pause,
                   ),
                 );
               } else {
@@ -131,44 +140,53 @@ class ControlButtonsWidget extends StatelessWidget {
             builder: (context, snapshot) => SizedBox(
               // height: 30,
               // width: 30,
-              child: IconButton(
-                  color: const Color(0xff3D345F),
-                  icon: SvgPicture.asset(
-                    assetName2,
-                    // icon: const Icon(Icons.play_arrow_rounded),
-                  ),
-                  onPressed: () {
-                    player.hasNext ? player.seekToNext : null;
-                  }),
+              child: Container(
+                // color: Colors.amber,
+                height:size.height/15,
+                child: IconButton(
+                    color: const Color(0xff3D345F),
+                    icon: SvgPicture.asset(
+                      assetName2,
+                    ),
+                    onPressed: () {
+                      player.hasNext ? player.seekToNext : null;
+                    }),
+
+              ),
             ),
           ),
         ),
         Expanded(
-          child: SizedBox(
-            // height:size.height/ 30,
-            // width: size.width/10,
-            child: StreamBuilder<double>(
-              stream: player.speedStream,
-              builder: (context, snapshot) => IconButton(
-                icon: Center(
-                  child: Text("${snapshot.data?.toStringAsFixed(1)}x",
-                      style: TextStyle(
-                          fontSize: size.width / 30,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xff3D345F))),
+          child: Container(
+            // color: Colors.grey,
+            height:size.height/19,
+            child: SizedBox(
+              // height:size.height/ 30,
+              // width: size.width/10,
+              child: StreamBuilder<double>(
+                stream: player.speedStream,
+                builder: (context, snapshot) => IconButton(
+                  icon: Center(
+                    child: Text("${snapshot.data?.toStringAsFixed(1)}x",
+                        style: TextStyle(
+                            fontSize: size.width / 35,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xff3D345F))),
+                  ),
+                  iconSize: size.height/20,
+                  onPressed: () {
+                    showSliderDialog(
+                      context: context,
+                      title: "Adjust speed",
+                      divisions: 10,
+                      min: 0.5,
+                      max: 1.5,
+                      value: player.speed,
+                      stream: player.speedStream,
+                      onChanged: player.setSpeed,
+                    );
+                  },
                 ),
-                onPressed: () {
-                  showSliderDialog(
-                    context: context,
-                    title: "Adjust speed",
-                    divisions: 10,
-                    min: 0.5,
-                    max: 1.5,
-                    value: player.speed,
-                    stream: player.speedStream,
-                    onChanged: player.setSpeed,
-                  );
-                },
               ),
             ),
           ),

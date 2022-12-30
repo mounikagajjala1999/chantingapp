@@ -27,8 +27,10 @@ class MyAppBarWidget extends StatelessWidget {
             icon: const Icon(Icons.menu, color: Colors.white, size: 23),
           ),
           Container(
+            // color: Colors.amber,
+            height: size.height/20,
             alignment: Alignment.topLeft,
-            padding: (EdgeInsets.only(top: 30, bottom: 30, left: 7)),
+            // padding: (EdgeInsets.only(top: 30, bottom: 30, left: 7)),
             // color: Colors.blue,
             child: Center(
               child: LayoutBuilder(builder: (context, constraints) {

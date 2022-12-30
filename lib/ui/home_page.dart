@@ -422,27 +422,27 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
             child: Row(
               children: [
                 ClipRRect(
-                  borderRadius: BorderRadius.only(
+                  borderRadius: const BorderRadius.only(
                       topLeft: Radius.circular(44),
                       bottomLeft: Radius.circular(44)),
                   child: Image.asset(
                     asset,
-                    height: size.height / 5.5,
-                    width: size.width / 3.2,
+                    height: size.height / 5.3,
+                    width: size.width / 3.5,
                     fit: BoxFit.cover,
                   ),
                 ),
                 Expanded(
                   // flex: 2,
                   child: Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.only(left:7),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Container(
-                            // width: 100,
-                            // height: 40,
+                            width: size.width/4,
+                            height: size.height/18,
                             // color: Colors.black,
                             child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -471,11 +471,13 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
                           ],
                         )),
                         Container(
+                          // color: Colors.cyan,
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: SizedBox(
-                              // height: 30,
-                              // width: 150,
+                              height:size.height/35,
+                              width:size.width/2,
+
                               child: ProgressBar(
                                 progressBarColor: Color(0xff3D345F),
                                 baseBarColor: Colors.grey,
