@@ -102,8 +102,8 @@ flutter:
     - assets/svg/play.svg
     - assets/image/mala.png
     - assets/svg/volume.svg
-    - assets/image/chant.png
     - assets/image/Rectangle.png
+    - assets/image/chantingapplogo.png
 
   #   - images/a_dot_ham.jpeg
 

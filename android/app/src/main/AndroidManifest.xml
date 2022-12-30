@@ -5,7 +5,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <application
         android:name="${applicationName}"
-        android:icon="@mipmap/chant"
+        android:icon="@mipmap/chantingapplogo"
         android:label="Chanting App"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">

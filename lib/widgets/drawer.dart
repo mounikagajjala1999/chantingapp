@@ -63,7 +63,7 @@ class _MyDrawerState extends State<MyDrawer> {
               currentAccountPictureSize: Size.square(50),
               currentAccountPicture: ClipRRect(
                 child: Image(
-                  image: AssetImage("assets/image/chant.png"),
+                  image: AssetImage("assets/image/chantingapplogo.png"),
                 ),
               ),
               accountEmail: null, //circleAvatar

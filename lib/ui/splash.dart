@@ -25,7 +25,7 @@ class _SplashState extends State<Splash> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    var asset1 = "assets/image/chant.png";
+    var asset1 = "assets/image/chantingapplogo.png";
     return Stack(
       children: [
         Container(

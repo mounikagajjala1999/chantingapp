@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 
-class HistoryPage extends StatelessWidget {
+class HistoryPage extends StatefulWidget {
   HistoryPage({Key? key}) : super(key: key);
 
+  @override
+  State<HistoryPage> createState() => _HistoryPageState();
+}
+
+class _HistoryPageState extends State<HistoryPage> {
   String counterKey = 'home_counter';
+  ScrollController listScrollController = ScrollController();
 
   Future<List<String>> _getHistoryListFromHive() async {
     final box = Hive.box<dynamic>('mybox');
@@ -13,22 +19,38 @@ class HistoryPage extends StatelessWidget {
     return list;
   }
 
-
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xff3D345F),
         title: const Text('History'),
       ),
+      // floatingActionButton: FloatingActionButton(
+      //   backgroundColor:Color(0xff3D345F),
+      //   onPressed: () {
+      //     if (listScrollController.hasClients) {
+      //       final position = listScrollController.position.maxScrollExtent;
+      //       listScrollController.animateTo(
+      //         position,
+      //         duration: Duration(seconds: 3),
+      //         curve: Curves.easeOut,
+      //       );
+      //     }
+      //   },
+      //   isExtended: true,
+      //   tooltip: "Scroll to top",
+      //   child: Icon(Icons.arrow_upward),
+      // ),
       body: FutureBuilder(
           future: _getHistoryListFromHive(),
           builder: (context, AsyncSnapshot<List<String>> snapshot) {
             if (snapshot.hasData) {
               return ListView.builder(
-
-                physics:BouncingScrollPhysics(),
+                controller: listScrollController,
+                  physics:BouncingScrollPhysics(),
                   reverse: true,
                   shrinkWrap: true,
                   itemCount: snapshot.data!.length,
