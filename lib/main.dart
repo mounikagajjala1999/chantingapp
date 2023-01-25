@@ -6,11 +6,7 @@
 // flutter run -t lib/example_playlist.dart
 
 // import 'package:audio_session/audio_session.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:just_audio/just_audio.dart';
-import 'package:vibration/vibration.dart';
 import 'package:yt_counter/my_app.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
@@ -20,7 +16,6 @@ import 'package:hive_flutter/hive_flutter.dart';
 // void main() => runApp(const Chant());
  Future<void> main() async {
   await Hive.initFlutter();
-
 
   var box = await Hive.openBox<dynamic>('mybox');
 

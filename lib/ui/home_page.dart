@@ -11,6 +11,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:vibration/vibration.dart';
 import 'package:yt_counter/chanting/api.dart';
 import 'package:yt_counter/chanting/model.dart';
+import 'package:yt_counter/chanting/post_api.dart';
 import 'package:yt_counter/main.dart';
 import 'package:yt_counter/my_app.dart';
 import 'package:yt_counter/res/audio_metadata.dart';
@@ -26,6 +27,15 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
+class DurationState {
+  const DurationState(
+      {required this.progress, required this.buffered, required this.total});
+
+  final Duration progress;
+  final Duration buffered;
+  final Duration total;
+}
+
 class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
   late AppLifecycleState _lastLifecycleState;
   late AudioPlayer _player;
@@ -34,21 +44,19 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
   int _malaCounter = 0;
   int _counter = 0;
   final _scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
-  List<String> list = [];
 
   void _incrementCounter() {
-
     setState(() {
       _counter++;
     });
   }
-
 
   void _clear() {
     String time = DateFormat("hh:mm:ss a").format(DateTime.now());
     String date = DateFormat("dd-MM-yyyy").format(DateTime.now());
     if (_counter != 0) {
       final box = Hive.box<dynamic>('mybox');
+      List<String> list = box.get(counterKey) ?? [];
       list.add("$_counter $date $time");
       box.put(counterKey, list);
     }
@@ -127,7 +135,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
   ]);
 
   Future<void> _callApi(version, packageName) async {
-    ForceUpdateModel? data = await api.getData(version);
+    ForceUpdateModel? data = await apiget.getData(version);
     if (data!.code == 1) {
       var appVersionFromApi = data.result![0].appVersion;
       if (version != appVersionFromApi) {
@@ -148,7 +156,6 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
       }
     }
   }
-
 
   Future<void> _init() async {
     // final session = await AudioSession.instance;
@@ -250,7 +257,6 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
           child: SizedBox(
             // height: size.height,
             child: Column(
-
               children: [
                 MyAppBarWidget(drawerscaffoldkey: drawerscaffoldkey),
                 _playerA(size),
@@ -404,7 +410,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
     return Container(
       // padding: EdgeInsets.symmetric(horizontal: 20),
       margin: EdgeInsets.symmetric(horizontal: 20),
-      height: size.height / 2.3,
+      // height: size.height / 2.3,
       // width: 200,
       decoration: BoxDecoration(
           color: Colors.white,
@@ -435,14 +441,14 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
                 Expanded(
                   // flex: 2,
                   child: Padding(
-                    padding: const EdgeInsets.only(left:7),
+                    padding: const EdgeInsets.only(left: 7),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Container(
-                            width: size.width/4,
-                            height: size.height/18,
+                            // width: size.width/4,
+                            // height: size.height/18,
                             // color: Colors.black,
                             child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -475,9 +481,8 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: SizedBox(
-                              height:size.height/35,
-                              width:size.width/2,
-
+                              height: size.height / 35,
+                              width: size.width / 2,
                               child: ProgressBar(
                                 progressBarColor: Color(0xff3D345F),
                                 baseBarColor: Colors.grey,
@@ -510,13 +515,30 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
             ),
           ),
           SizedBox(height: size.height / 68),
-          Text("Playlist",
-              style: TextStyle(
-                fontSize: size.width / 25,
-                fontWeight: FontWeight.bold,
-                fontFamily: "Poppins",
-              )),
-          SizedBox(height: size.height / 90),
+          Row(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 140),
+                child: Text("Playlist",
+                    style: TextStyle(
+                      fontSize: size.width / 25,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: "Poppins",
+                    )),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 95),
+                child: MaterialButton(
+                  minWidth: 50,
+
+                  onPressed: () {},
+                  child: const Icon(
+                    Icons.file_upload_outlined,
+                  ),
+                ),
+              )
+            ],
+          ),
           Container(
             height: size.height / 5.2,
             // color: Colors.amber,
@@ -548,7 +570,8 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
             //       return _trackListTile(
             //           count: index + 1, title: songsList[index]);
             //     })),
-          )
+          ),
+          SizedBox(height: size.height / 90),
         ],
       ),
     );

@@ -42,12 +42,6 @@ class _SplashState extends State<Splash> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  // ClipRRect(
-                  //   borderRadius: const BorderRadius.only(
-                  //       bottomRight: Radius.circular(100),
-                  //       topRight: Radius.circular(100),
-                  //       topLeft: Radius.circular(100),
-                  //       bottomLeft: Radius.circular(100)),
                     Image.asset(
                       asset1,
                       height: size.height / 4,
@@ -60,11 +54,6 @@ class _SplashState extends State<Splash> {
                   )
                 ],
               ),
-
-              // Text("splash screen",style: TextStyle(
-              //   fontSize: 24,
-              //   fontWeight: FontWeight.bold
-              // ),),
             ),
           ),
         ),

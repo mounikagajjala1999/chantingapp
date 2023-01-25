@@ -1,7 +1,11 @@
-import 'dart:io';
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:yt_counter/ui/histroy_page.dart';
+
+import '../streams/total_count_stream.dart';
 
 class MyDrawer extends StatefulWidget {
   const MyDrawer({Key? key}) : super(key: key);
@@ -11,42 +15,45 @@ class MyDrawer extends StatefulWidget {
 }
 
 class _MyDrawerState extends State<MyDrawer> {
-  late String version;
+  var version;
+  var err;
 
-
-  void getVersion(String v) {
-    setState(() {
-      version = v;
+  Future<void> getVersion(String v) async {
+    await coutStream.count.listen((event) {
+      print(">>>>123<<<>>$event");
+      setState(() {
+        version = v;
+        err = event;
+        print(err);
+      });
     });
   }
 
   @override
   void initState() {
     PackageInfo.fromPlatform().then((PackageInfo packageInfo) {
-      // String appName = packageInfo.appName;
-      // print("app name = " + appName);
-      // String packageName = packageInfo.packageName;
-      // print("package name =" + packageName);
       String version = packageInfo.version;
       print("version =" + version);
       getVersion(version);
-      // String buildNumber = packageInfo.buildNumber;
-      // print("build number =" + buildNumber);
-      // _callApi(version, packageName);
     });
+
     // TODO: implement initState
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    String counterKey = 'home_counter';
     Size size = MediaQuery.of(context).size;
+    final box = Hive.box<dynamic>('mybox');
+    List<String> list = box.get(counterKey) ?? [];
+
     return Drawer(
       child: ListView(
         physics: NeverScrollableScrollPhysics(),
         padding: const EdgeInsets.all(0),
         children: [
-          const DrawerHeader(
+          DrawerHeader(
             decoration: BoxDecoration(
                 gradient: LinearGradient(
                     begin: Alignment.topLeft,
@@ -57,9 +64,18 @@ class _MyDrawerState extends State<MyDrawer> {
               decoration: BoxDecoration(color: Colors.transparent),
               accountName: SizedBox(
                 height: 60,
-                child: Text(
-                  "Chanting App ",
-                  style: TextStyle(fontSize: 18),
+                child: Column(
+                  children: [
+                    Text(
+                      "Chanting App ",
+                      style: TextStyle(fontSize: 18),
+                    ),
+                    Spacer(),
+                    Text(
+                      "Total count ${err.toString()}",
+                      style: TextStyle(fontSize: 15),
+                    ),
+                  ],
                 ),
               ),
               currentAccountPictureSize: Size.square(50),
@@ -98,7 +114,7 @@ class _MyDrawerState extends State<MyDrawer> {
             child: Text('About app', style: TextStyle(fontSize: 17)),
           ),
           SizedBox(
-            height:size.height/1.8,
+            height: size.height / 1.8,
             child: Container(
               // color: Colors.amber,
               alignment: Alignment.bottomCenter,

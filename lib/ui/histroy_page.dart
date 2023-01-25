@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 
+import '../streams/total_count_stream.dart';
+
 class HistoryPage extends StatefulWidget {
   HistoryPage({Key? key}) : super(key: key);
 
@@ -47,14 +49,27 @@ class _HistoryPageState extends State<HistoryPage> {
       body: FutureBuilder(
           future: _getHistoryListFromHive(),
           builder: (context, AsyncSnapshot<List<String>> snapshot) {
+            var sum = 0;
+            var arr = [];
             if (snapshot.hasData) {
               return ListView.builder(
-                controller: listScrollController,
-                  physics:BouncingScrollPhysics(),
+                  controller: listScrollController,
+                  physics: BouncingScrollPhysics(),
                   reverse: true,
                   shrinkWrap: true,
                   itemCount: snapshot.data!.length,
                   itemBuilder: (BuildContext context, int index) {
+                    var total = int.parse(snapshot.data![index].split(" ")[0]);
+                    arr.add(total);
+                    var totalCount;
+                    // print(arr[arr.length-1]);
+                    if (snapshot.data!.length == arr.length) {
+                      totalCount =
+                          arr.reduce((value, element) => value + element);
+                      coutStream.addTotalCount(totalCount);
+                    }
+
+
                     return ListTile(
                       contentPadding: EdgeInsets.symmetric(
                           vertical: 10.0, horizontal: 27.0),
@@ -71,10 +86,10 @@ class _HistoryPageState extends State<HistoryPage> {
                               _getMonth(int.tryParse(snapshot.data![index]
                                   .split(" ")[1]
                                   .split("-")[1])!),
-                              style:  TextStyle(
+                              style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   color: Colors.grey,
-                                  fontSize: size.width /40)),
+                                  fontSize: size.width / 40)),
                           Text(
                               snapshot.data![index].split(" ")[1].split("-")[2],
                               style: TextStyle(
@@ -93,13 +108,16 @@ class _HistoryPageState extends State<HistoryPage> {
                           Text(snapshot.data![index].split(" ")[3],
                               style: const TextStyle(
                                   color: Colors.grey, fontSize: 17)),
-
                         ],
                       ),
-                      title: Text(
-                          ' Beads ${snapshot.data![index].split(" ")[0]}',
-                          style: const TextStyle(
-                              fontSize: 17, fontWeight: FontWeight.bold)),
+                      title: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(' Beads ${snapshot.data![index].split(" ")[0]}',
+                              style: const TextStyle(
+                                  fontSize: 17, fontWeight: FontWeight.bold)),
+                        ],
+                      ),
                     );
                   });
             } else if (snapshot.hasError) {

@@ -20,18 +20,14 @@ class ControlButtonsWidget extends StatelessWidget {
       children: [
         Expanded(
           child: Container(
-            // color: Colors.amber,
             height:size.height/15,
-            // width: size.width/10,
             child: StreamBuilder<double>(
               stream: player.speedStream,
               builder: (context, snapshot) => IconButton(
                 color: Color(0xff3D345F),
                 icon: SvgPicture.asset(
                   assetName5,
-                  // icon: const Icon(Icons.play_arrow_rounded),
                 ),
-                // icon: const Icon(Icons.volume_down_outlined),
                 onPressed: () {
                   showSliderDialog(
                     context: context,
@@ -50,21 +46,17 @@ class ControlButtonsWidget extends StatelessWidget {
         ),
         Expanded(
           child: Container(
-            // color: Colors.green,
             height:size.height/15,
-            // width: size.width/10,
-            // height: 30,
-            // width: 30,
             child: StreamBuilder<SequenceState?>(
               stream: player.sequenceStateStream,
               builder: (context, snapshot) => IconButton(
                 color: const Color(0xff3D345F),
                 icon: SvgPicture.asset(
                   assetName1,
-                  // fit: BoxFit.cover,
-                  // icon: const Icon(Icons.play_arrow_rounded),
                 ),
-                onPressed: player.hasPrevious ? player.seekToPrevious : null,
+                onPressed: player.hasPrevious
+                    ? player.seekToPrevious
+                    : null,
               ),
             ),
           ),
@@ -88,14 +80,10 @@ class ControlButtonsWidget extends StatelessWidget {
                   // color: Colors.grey,
                   height:size.height/15,
                   child: SizedBox(
-
-                    // height: 30,
-                    // width: 30,
                     child: IconButton(
                       color: const Color(0xff3D345F),
                       icon: SvgPicture.asset(
                         assetName4,
-                        // icon: const Icon(Icons.play_arrow_rounded),
                       ),
                       // iconSize: 25.0,
                       onPressed: player.play,
@@ -104,15 +92,11 @@ class ControlButtonsWidget extends StatelessWidget {
                 );
               } else if (processingState != ProcessingState.completed) {
                 return Container(
-                  // color: Colors.grey,
                   height:size.height/15,
                   child: SizedBox(
-                    // height: 30,
-                    // width: 30,
                     child: IconButton(
                       icon: SvgPicture.asset(
                         assetName3,
-                        // icon: const Icon(Icons.play_arrow_rounded),
                       ),
                       iconSize: 25.0,
                       onPressed: player.pause,
@@ -121,8 +105,6 @@ class ControlButtonsWidget extends StatelessWidget {
                 );
               } else {
                 return SizedBox(
-                  // height: 30,
-                  // width: 25,
                   child: IconButton(
                     icon: const Icon(Icons.replay),
                     iconSize: 25.0,
