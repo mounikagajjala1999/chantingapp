@@ -16,19 +16,34 @@ class MyDrawer extends StatefulWidget {
 
 class _MyDrawerState extends State<MyDrawer> {
   var version;
-  var err;
+  var err=0;
+  var count=0;
+
+
 
   Future<void> getVersion(String v) async {
     await coutStream.count.listen((event) {
+      _increment();
       print(">>>>123<<<>>$event");
+
       setState(() {
+
         version = v;
         err = event;
         print(err);
       });
     });
   }
+  void _increment() {
 
+    setState(() {
+      if (err % 108 == 0 && err != 0) {
+        count++;
+        print(" shifaaaaa$count");
+      }
+      // count++;
+    });
+  }
   @override
   void initState() {
     PackageInfo.fromPlatform().then((PackageInfo packageInfo) {
@@ -72,7 +87,7 @@ class _MyDrawerState extends State<MyDrawer> {
                     ),
                     Spacer(),
                     Text(
-                      "Total count ${err.toString()}",
+                      "Total count ${count}.${err.toString()}",
                       style: TextStyle(fontSize: 15),
                     ),
                   ],

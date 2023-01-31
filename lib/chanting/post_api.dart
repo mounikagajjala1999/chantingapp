@@ -6,7 +6,7 @@ import 'model.dart';
 
 
 class Api {
-  Future<ForceUpdateModel?> getData(version) async {
+  Future<ForceUpdateModel?> getData() async {
     String url = "https://force-update.onrender.com/fu/get_pkgs";
     Uri uri = Uri.parse(url);
     print(url);

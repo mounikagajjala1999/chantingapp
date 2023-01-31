@@ -135,10 +135,16 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
   ]);
 
   Future<void> _callApi(version, packageName) async {
-    ForceUpdateModel? data = await apiget.getData(version);
+    ForceUpdateModel? data = await apiget.getData();
+
     if (data!.code == 1) {
       var appVersionFromApi = data.result![0].appVersion;
-      if (version != appVersionFromApi) {
+
+      if ( version!= appVersionFromApi) {
+        // print("dasff${version != appVersionFromApi}");
+        // print("jvsbdgbv$version" );
+        // print("hbcsgtvsycbctygcgctc$appVersionFromApi" );
+
         AlertDialog(
           actions: [
             IconButton(
@@ -227,13 +233,13 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
 
   String selected = "No Track";
 
-  List<String> songsList = [
-    "Lord Siva",
-    "Om Martra",
-    "Gayatri Mantra",
-    "Changing Om",
-    "Shri Swami Samartha Jap",
-  ];
+  // List<String> songsList = [
+  //   "Lord Siva",
+  //   "Om Martra",
+  //   "Gayatri Mantra",
+  //   "Changing Om",
+  //   "Shri Swami Samartha Jap",
+  // ];
 
   @override
   Widget build(BuildContext context) {
@@ -339,7 +345,6 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
                                       fontSize: size.width / 27,
                                       color: Colors.white)),
                               onPressed: () {
-                                // box.clear();
                                 _clear();
                               },
                             ),

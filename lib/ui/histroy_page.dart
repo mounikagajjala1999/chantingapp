@@ -62,7 +62,7 @@ class _HistoryPageState extends State<HistoryPage> {
                     var total = int.parse(snapshot.data![index].split(" ")[0]);
                     arr.add(total);
                     var totalCount;
-                    // print(arr[arr.length-1]);
+                    print(arr[arr.length-1]);
                     if (snapshot.data!.length == arr.length) {
                       totalCount =
                           arr.reduce((value, element) => value + element);

@@ -131,7 +131,10 @@ class ControlButtonsWidget extends StatelessWidget {
                       assetName2,
                     ),
                     onPressed: () {
-                      player.hasNext ? player.seekToNext : null;
+
+                      player.hasNext
+                          ? player.seekToNext()
+                          : null;
                     }),
 
               ),
